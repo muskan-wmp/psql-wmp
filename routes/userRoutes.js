@@ -1,7 +1,7 @@
-
+// userRoutes.js
 const express = require("express");
 const router = express.Router();
-const userController = require("../Controller/userController.js"); // Correct import
+const userController = require("../Controller/userController.js");
 
 module.exports = (User) => {
   // Signup route

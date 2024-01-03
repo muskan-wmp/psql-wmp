@@ -1,8 +1,8 @@
+
 const { DataTypes, Sequelize } = require("sequelize");
 
-exports.userModel = (sequelize) => {
-  // Use DataTypes directly from Sequelize
-  return sequelize.define("User", {
+const User = (sequelize) => {
+  return sequelize.define("Employee", {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -12,16 +12,18 @@ exports.userModel = (sequelize) => {
       allowNull: false,
     },
     age: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     mobile_no: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     address: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
   });
 };
+
+module.exports = User;

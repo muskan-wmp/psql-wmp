@@ -1,6 +1,6 @@
-
+// postgresql.js
 const { Sequelize } = require("sequelize");
-const { userModel } = require("./Model/user.js");
+const User = require("./Model/user.js");
 
 exports.connection = async () => {
   const sequelize = new Sequelize('student', 'postgres', 'postgres', {
@@ -8,23 +8,22 @@ exports.connection = async () => {
     dialect: 'postgres',
   });
 
-  let User = null;
-
   try {
     // Attempt to authenticate the connection
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
 
-    // Create the User model using userModel function
-    User = userModel(sequelize);
+    // Create the User model directly
+    const userModel = User(sequelize);
 
     // Sync the model with the database
     await sequelize.sync();
     console.log("Table created");
+    
+    // Return the connection and User model
+    return { sequelize, userModel };
   } catch (error) {
     console.error('Unable to connect to the database:', error);
+    throw error; // Rethrow the error to signal the failure
   }
-
-  // Return the connection and User model
-  return { sequelize, User };
 };

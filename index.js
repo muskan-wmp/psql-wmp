@@ -1,22 +1,24 @@
-const express = require ("express");
+// index.js
+
+const express = require("express");
 const bodyParser = require("body-parser");
-const { connection } = require ("./postgresql.js");
+const { connection } = require("./postgresql.js");
 
 const app = express();
 app.use(bodyParser.json());
 const port = 8081;
 
-// You need to await the connection function to get the User model
+// You need to await the connection function to get the userModel
 const startServer = async () => {
-  const { sequelize, User } = await connection();
+  const { sequelize, userModel } = await connection(); // Change from Employee to userModel
 
-  if (!User) {
-    console.error('User model is not defined. Server cannot start.');
+  if (!userModel) {
+    console.error('userModel is not defined. Server cannot start.');
     process.exit(1);
   }
 
-  // Import userRoutes after obtaining the User model
-  const userRoutes = require("./routes/userRoutes")(User);
+  // Import userRoutes after obtaining the userModel
+  const userRoutes = require("./routes/userRoutes")(userModel); // Change from Employee to userModel
 
   app.use("/user", userRoutes);
 
@@ -24,10 +26,10 @@ const startServer = async () => {
     console.log(`Server is running at http://localhost:${port}`);
   });
 
-//   process.on('SIGINT', async () => {
-//     await sequelize.close();
-//     process.exit();
-//   });
+  process.on('SIGINT', async () => {
+    await sequelize.close();
+    process.exit();
+  });
 };
 
 startServer();
