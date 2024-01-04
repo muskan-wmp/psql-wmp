@@ -7,7 +7,6 @@ exports.connection = async () => {
     host: 'localhost',
     dialect: 'postgres',
   });
-
   try {
     // Attempt to authenticate the connection
     await sequelize.authenticate();
@@ -17,7 +16,7 @@ exports.connection = async () => {
     const userModel = User(sequelize);
 
     // Sync the model with the database
-    await sequelize.sync({ force: true }); //drop the existing table and recreate it.
+    await sequelize.sync(); //drop the existing table and recreate it.
     console.log("Table created");
     
     // Return the connection and User model

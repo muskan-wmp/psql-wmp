@@ -15,7 +15,7 @@ const User = (sequelize) => {
       allowNull: false,
     },
     mobile_no: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       allowNull: false,
     },
     address: {
