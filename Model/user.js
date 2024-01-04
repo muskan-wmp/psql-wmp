@@ -1,5 +1,5 @@
-
 const { DataTypes, Sequelize } = require("sequelize");
+
 const User = (sequelize) => {
   return sequelize.define("Employee", {
     name: {
@@ -17,16 +17,26 @@ const User = (sequelize) => {
     mobile_no: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey : true,
     },
     address: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [8, 20],
+        notNull: true,
+        isStrongPassword: function (value) {
+          if (!/(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,}/.test(value)) {
+            throw new Error(
+              "Password must contain at least one digit, one alphabet, and one special character, and have a minimum length of 8 characters."
+            );
+          }
+        },
       },
+    },
   });
 };
 

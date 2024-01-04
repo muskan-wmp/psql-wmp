@@ -9,5 +9,7 @@ module.exports = (User) => {
   // Login route
   router.post("/login", (req, res) => userController.login(req, res, User));
 
+  router.get("/allusers",(req, res) => userController.allUsers(req, res, User));
+
   return router;
 };
