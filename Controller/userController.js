@@ -1,20 +1,31 @@
 const User = require("../Model/user.js");
+const Crud = require("../Crud/crudOpeartion.js"); // Import the Crud class
+const { userModel } = require("../Model/index.js");
 
-exports.signup = async (req, res,User) => {
+const userCrud = new Crud(userModel); // Instantiate Crud class with User model
+
+exports.signup = async (req, res) => {
   console.log("Signup route hit");
 
-  const { name, age, email, mobile_no, address, password} = req.body;
+  const { name, age, email, mobile_no, address, password } = req.body;
 
   try {
     console.log("Received name:", name);
-    console.log("Received name:", email);
-    console.log("Received name:", age);
-    console.log("Received name:", address);
-    console.log("Received name:", mobile_no);
-    console.log("Received name:", password);
+    console.log("Received email:", email);
+    console.log("Received age:", age);
+    console.log("Received address:", address);
+    console.log("Received mobile_no:", mobile_no);
+    console.log("Received password:", password);
 
-    // Create a new user in the database
-    const newEmployee = await User.create({ name, age, email, mobile_no, address, password});
+    // Create a new user in the database using Crud class
+    const newEmployee = await userCrud.create({
+      name,
+      age,
+      email,
+      mobile_no,
+      address,
+      password,
+    });
 
     res.status(201).json({
       id: newEmployee.id,
@@ -26,25 +37,23 @@ exports.signup = async (req, res,User) => {
       password: newEmployee.password,
     });
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error creating user:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-exports.login = async (req, res,User) => {
+exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Check if the user exists in the database
-    const existingEmployee = await User.findOne({ where: { email, password } });
+    // Check if the user exists in the database using Crud class
+    const existingEmployee = await userCrud.findOne({ email, password });
 
     if (existingEmployee) {
       res.status(200).json({
         id: existingEmployee.id,
         email: existingEmployee.email,
-        // name: existingEmployee.name,
         password: existingEmployee.password,
-        
       });
       console.log("Logged in successfully");
     } else {
@@ -56,18 +65,61 @@ exports.login = async (req, res,User) => {
   }
 };
 
-exports.allUsers = async(req, res, User)=>{
-  
-  try{
-    const alluser = await User.findAll();
-    if(alluser){
-      res.json({alluser});
-      console.log("All employee displayed")
+// userController.js
+
+exports.allUsers = async (req, res) => {
+  try {
+    // Call the allUsers method on the userCrud instance
+    const allUsers = await userCrud.allUsers();
+
+    if (allUsers.length > 0) {
+      res.json({ allUsers });
+      console.log("All employees displayed");
+    } else {
+      res.json("No employees exist");
     }
-    else{
-      res.json("No employee exists");
-    }
-  }catch(error){
+  } catch (error) {
     console.log(error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
+
+
+exports.updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { name, age, email, mobile_no, address, password } = req.body;
+
+  try {
+    const updatedUser = await userCrud.update(id, {
+      name,
+      age,
+      email,
+      mobile_no,
+      address,
+      password,
+    });
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("Error updating user:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const isDeleted = await userCrud.delete(id);
+
+    if (isDeleted) {
+      res.status(200).json({ message: "User deleted successfully" });
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting user:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+

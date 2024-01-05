@@ -1,6 +1,6 @@
-const { DataTypes, Sequelize } = require("sequelize");
+const { DataTypes } = require("sequelize");
 
-const User = (sequelize) => {
+const defineUserModel = (sequelize) => {
   return sequelize.define("Employee", {
     name: {
       type: DataTypes.STRING,
@@ -15,7 +15,7 @@ const User = (sequelize) => {
       allowNull: false,
     },
     mobile_no: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     address: {
@@ -24,7 +24,7 @@ const User = (sequelize) => {
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // allowNull: false,
       validate: {
         len: [8, 20],
         notNull: true,
@@ -40,4 +40,4 @@ const User = (sequelize) => {
   });
 };
 
-module.exports = User;
+module.exports = defineUserModel;
