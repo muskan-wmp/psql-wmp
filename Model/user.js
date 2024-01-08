@@ -24,9 +24,9 @@ const defineUserModel = (sequelize) => {
     },
     password: {
       type: DataTypes.STRING,
-      // allowNull: false,
+      allowNull: false,
       validate: {
-        len: [8, 20],
+        // len: [8, 1000],
         notNull: true,
         isStrongPassword: function (value) {
           if (!/(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,}/.test(value)) {

@@ -1,9 +1,11 @@
 const User = require("../Model/user.js");
-const Crud = require("../Crud/crudOpeartion.js"); // Import the Crud class
+const Crud = require("../Crud/crudOperation.js"); // Import the Crud class
 const { userModel } = require("../Model/index.js");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const userCrud = new Crud(userModel); // Instantiate Crud class with User model
-
+const SECRET_KEY ='Password12$';
 exports.signup = async (req, res) => {
   console.log("Signup route hit");
 
@@ -16,7 +18,7 @@ exports.signup = async (req, res) => {
     console.log("Received address:", address);
     console.log("Received mobile_no:", mobile_no);
     console.log("Received password:", password);
-
+    const hashed_password = await bcrypt.hash(password, 10)
     // Create a new user in the database using Crud class
     const newEmployee = await userCrud.create({
       name,
@@ -24,18 +26,19 @@ exports.signup = async (req, res) => {
       email,
       mobile_no,
       address,
-      password,
+      password:hashed_password,
     });
 
     res.status(201).json({
+      message:"user Created Successfully",
       id: newEmployee.id,
       name: newEmployee.name,
       age: newEmployee.age,
       email: newEmployee.email,
       address: newEmployee.address,
       mobile_no: newEmployee.mobile_no,
-      password: newEmployee.password,
     });
+  
   } catch (error) {
     console.error("Error creating user:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
@@ -50,10 +53,18 @@ exports.login = async (req, res) => {
     const existingEmployee = await userCrud.findOne({ email, password });
 
     if (existingEmployee) {
+      // Generate a token with user information
+      const token = jwt.sign(
+        {
+          userId: existingEmployee.id,
+          email: existingEmployee.email,
+        },
+        'SECRET_KEY', // Replace with your own secret key
+        { expiresIn: '1h' } // Optional: set the expiration time for the token
+      );
       res.status(200).json({
         id: existingEmployee.id,
-        email: existingEmployee.email,
-        password: existingEmployee.password,
+        token:token,
       });
       console.log("Logged in successfully");
     } else {
@@ -76,7 +87,7 @@ exports.allUsers = async (req, res) => {
       res.json({ allUsers });
       console.log("All employees displayed");
     } else {
-      res.json("No employees exist");
+      res.json("No employee exist");
     }
   } catch (error) {
     console.log(error.message);
@@ -100,6 +111,7 @@ exports.updateUser = async (req, res) => {
     });
 
     res.status(200).json(updatedUser);
+    res.json("Employee details updated")
   } catch (error) {
     console.error("Error updating user:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
