@@ -1,13 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const { createDBConnection } = require("./db_connection/postgresql.js");
-const userModel = require("./Model/user.js"); // Import the userModel directly
-
+const { userModel, departmentModel, taskModel } = require("./Model/index.js");
 const app = express();
 app.use(bodyParser.json());
 
 // Directly use the userModel in your routes
-const userRoutes = require("./routes/userRoutes")(userModel);
+const userRoutes = require("./routes/userRoutes");
 
 app.use("/user", userRoutes);
 

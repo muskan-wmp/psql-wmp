@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 
 const defineUserModel = (sequelize) => {
-  return sequelize.define("Employee", {
+  return sequelize.define("Wmp", {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -15,7 +15,7 @@ const defineUserModel = (sequelize) => {
       allowNull: false,
     },
     mobile_no: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     address: {
@@ -26,7 +26,6 @@ const defineUserModel = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        // len: [8, 1000],
         notNull: true,
         isStrongPassword: function (value) {
           if (!/(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,}/.test(value)) {
